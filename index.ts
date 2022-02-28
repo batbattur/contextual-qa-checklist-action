@@ -57,9 +57,6 @@ async function run() {
     }
   );
 
-  console.log(modifiedPaths);
-  console.log(applicableChecklistPaths);
-
   const existingComment = (
     await client.rest.issues.listComments({
       owner: owner,
@@ -72,7 +69,9 @@ async function run() {
     const body = [
       `${header}\n\n`,
       ...applicableChecklistPaths.map(formatItemsForPath),
-      `\n${footer}`
+      `\n${footer}`,
+      `\n Modified paths: ${modifiedPaths}`,
+      `\n Checklist paths: ${applicableChecklistPaths}`
     ].join("");
 
     if (existingComment) {
