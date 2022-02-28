@@ -57,6 +57,9 @@ async function run() {
     }
   );
 
+  console.log(modifiedPaths);
+  console.log(applicableChecklistPaths);
+
   const existingComment = (
     await client.rest.issues.listComments({
       owner: owner,
