@@ -14922,17 +14922,32 @@ const minimatchOptions = {
 function getChecklistPaths() {
     const inputFile = core.getInput("input-file");
     const parsedFile = YAML.parse(readFileSync(inputFile, { encoding: "utf8" }));
-    return parsedFile.paths;
+    return parsedFile;
 }
-function formatItemsForPath([path, items]) {
+function formatItemsForPath(applicableChecklist) {
     const showPaths = core.getInput("show-paths") === 'true';
-    return showPaths
-        ? [
-            `__Files matching \`${path}\`:__\n`,
-            ...items.map((item) => `- [ ] ${item}\n`),
-            "\n",
-        ].join("")
-        : [...items.map((item) => `- [ ] ${item}\n`)].join("");
+    let text = "";
+    for (const temp of applicableChecklist) {
+        if (showPaths) {
+            text =
+                [
+                    `__The following files got changed:__\n`,
+                    `\`${temp.changedPath.join("\n")}\`\n`,
+                    `\`${temp.description}\`\n`,
+                    ...temp.items.map((item) => `- [ ] ${item}\n`),
+                    "\n",
+                ].join("");
+        }
+        else {
+            text =
+                [
+                    `\`${temp.description}\`\n`,
+                    ...temp.items.map((item) => `- [ ] ${item}\n`),
+                    "\n",
+                ].join("");
+        }
+    }
+    return text;
 }
 function run() {
     var _a, _b;
@@ -14948,14 +14963,24 @@ function run() {
             repo: repo,
             pull_number: number
         })).data.map(file => file.filename);
-        const applicableChecklistPaths = Object.entries(checklistPaths).filter(([key, _]) => {
-            for (const modifiedPath of modifiedPaths) {
-                if (minimatch(modifiedPath, key, minimatchOptions)) {
-                    return true;
+        let applicableChecklistPaths = [];
+        for (const [key, value] of Object.entries(getChecklistPaths())) {
+            let isApplicable = false;
+            let changedPath = [];
+            for (const path in value.paths) {
+                // if (modifiedPaths.includes((value as any).paths[path])){
+                for (const modifiedPath of modifiedPaths) {
+                    if (minimatch(modifiedPath, value.paths[path], minimatchOptions)) {
+                        changedPath.push(value.paths[path]);
+                        isApplicable = true;
+                    }
                 }
             }
-            return false;
-        });
+            if (isApplicable) {
+                value.changedPath = changedPath;
+                applicableChecklistPaths.push(value);
+            }
+        }
         const existingComment = (yield client.rest.issues.listComments({
             owner: owner,
             repo: repo,
@@ -14963,10 +14988,9 @@ function run() {
         })).data.find(comment => comment.body.includes(footer));
         if (applicableChecklistPaths.length > 0) {
             const body = [
-                `\n Modified paths: ${modifiedPaths}`,
-                ...applicableChecklistPaths.map(formatItemsForPath),
+                `${header}\n\n`,
+                formatItemsForPath(applicableChecklistPaths),
                 `\n${footer}`,
-                `\n Checklist paths: ${applicableChecklistPaths}`
             ].join("");
             if (existingComment) {
                 yield client.rest.issues.updateComment({
