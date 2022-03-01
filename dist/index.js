@@ -14929,22 +14929,20 @@ function formatItemsForPath(applicableChecklist) {
     let text = "";
     for (const temp of applicableChecklist) {
         if (showPaths) {
-            text =
-                [
-                    `__The following files got changed:__\n`,
-                    `\`${temp.changedPath.join("\n")}\`\n`,
-                    `\`${temp.description}\`\n`,
-                    ...temp.items.map((item) => `- [ ] ${item}\n`),
-                    "\n",
-                ].join("");
+            text.concat([
+                `__The following files got changed:__\n`,
+                `\`${temp.changedPath.join("\n")}\`\n`,
+                `\`${temp.description}\`\n`,
+                ...temp.items.map((item) => `- [ ] ${item}\n`),
+                "\n",
+            ].join(""));
         }
         else {
-            text =
-                [
-                    `\`${temp.description}\`\n`,
-                    ...temp.items.map((item) => `- [ ] ${item}\n`),
-                    "\n",
-                ].join("");
+            text.concat([
+                `\`${temp.description}\`\n`,
+                ...temp.items.map((item) => `- [ ] ${item}\n`),
+                "\n",
+            ].join(""));
         }
     }
     return text;
@@ -14968,7 +14966,6 @@ function run() {
             let isApplicable = false;
             let changedPath = [];
             for (const path in value.paths) {
-                // if (modifiedPaths.includes((value as any).paths[path])){
                 for (const modifiedPath of modifiedPaths) {
                     if (minimatch(modifiedPath, value.paths[path], minimatchOptions)) {
                         changedPath.push(value.paths[path]);
@@ -14989,7 +14986,7 @@ function run() {
         if (applicableChecklistPaths.length > 0) {
             const body = [
                 `${header}\n\n`,
-                formatItemsForPath(applicableChecklistPaths),
+                `${formatItemsForPath(applicableChecklistPaths)}`,
                 `\n${footer}`,
             ].join("");
             if (existingComment) {
