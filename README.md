@@ -93,5 +93,10 @@ Example for the checklist file paths:
 
 When matching files are updated in a PR, the action will automatically post a checklist containing items under that path's key.
 
-See https://github.com/batbattur/All/pull/36#issuecomment-1055868189 for an example PR checklist
+See https://github.com/batbattur/All/pull/36#issuecomment-1055868189 for an example PR checklist.
+Example workflow: https://github.com/batbattur/All/blob/master/.github/workflows/checklist.yml
+Example checklist file: https://github.com/batbattur/All/blob/master/.github/QAchecklist.yml
 
+#### Contributing
+
+After making any changes, you need to run `npm run build-dist` and push the updated `dist` folder to the repo. 
