@@ -25,13 +25,13 @@ function formatItemsForPath(applicableChecklist): string {
     if (showPaths){
       text +=
         `__Files were changed in the following path(s):__\n` +
-        `${temp.changedPath.join("\n")}\n` + 
-        `${temp.description}\n` + 
-        `${temp.items.map((item) => `- [ ] ${item}`).join("\n")}\n`;
+        `${temp.changedPath.map((path) => `- \`${path}\``).join("\n")}\n`+
+        `\n${temp.description}\n` + 
+        `${temp.items.map((item) => `- [ ] ${item}`).join("\n")}\n\n`;
     } else {
       text +=
         `${temp.description}\n` + 
-        `${temp.items.map((item) => `- [ ] ${item}`).join("\n")}\n`;
+        `${temp.items.map((item) => `- [ ] ${item}`).join("\n")}\n\n`;
       }
     }
   return text;
@@ -75,23 +75,6 @@ async function run() {
     })
   ).data.map(file => file.filename);
 
-  // let applicableChecklistPaths = [];
-  // for (const [key, value] of Object.entries(checklistPaths)){
-  //   let isApplicable = false
-  //   let changedPath = []
-  //   for (const path in (value as any).paths){
-  //     for (const modifiedPath of modifiedPaths) {
-  //       if (minimatch(modifiedPath, (value as any).paths[path], minimatchOptions)) {
-  //         changedPath.push((value as any).paths[path])
-  //         isApplicable = true
-  //       }
-  //     }
-  //   }
-  //   if (isApplicable) {
-  //     (value as any).changedPath = changedPath
-  //     applicableChecklistPaths.push(value)
-  //   }
-  // }
   const applicableChecklistPaths = getMatchingPaths(checklistPaths, modifiedPaths);
 
   const existingComment = (
