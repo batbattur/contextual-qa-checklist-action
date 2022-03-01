@@ -14930,15 +14930,15 @@ function formatItemsForPath(applicableChecklist) {
     for (const temp of applicableChecklist) {
         if (showPaths) {
             text +=
-                `__The following files got changed:__\n`,
-                `\`${temp.changedPath.join("\n")}\`\n`,
-                `\`${temp.description}\`\n`,
-                `\`${temp.items.map((item) => `- [ ] ${item}\n`)}\`\n`;
+                `__The following files got changed:__\n` +
+                    `\`${temp.changedPath.join("\n")}\`\n` +
+                    `\`${temp.description}\`\n` +
+                    `\`${temp.items.map((item) => `- [ ] ${item}\n`)}\`\n`;
         }
         else {
             text +=
-                `\`${temp.description}\`\n`,
-                `\`${temp.items.map((item) => `- [ ] ${item}\n`)}\`\n`;
+                `\`${temp.description}\`\n` +
+                    `\`${temp.items.map((item) => `- [ ] ${item}\n`)}\`\n`;
         }
     }
     return text;
