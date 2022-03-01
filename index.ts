@@ -23,21 +23,21 @@ function formatItemsForPath(applicableChecklist): string {
   let text = ""
   for (const temp of applicableChecklist) {
     if (showPaths){
-      text =
+      text.concat(
         [
           `__The following files got changed:__\n`,
           `\`${temp.changedPath.join("\n")}\`\n`,
           `\`${temp.description}\`\n`,
           ...temp.items.map((item) => `- [ ] ${item}\n`),
           "\n",
-        ].join("")
+        ].join(""))
     } else {
-        text =
+        text.concat(
           [
             `\`${temp.description}\`\n`,
             ...temp.items.map((item) => `- [ ] ${item}\n`),
             "\n",
-          ].join("")
+          ].join(""))
       }
     }
   return text;
@@ -65,7 +65,6 @@ async function run() {
     let isApplicable = false
     let changedPath = []
     for (const path in (value as any).paths){
-      // if (modifiedPaths.includes((value as any).paths[path])){
       for (const modifiedPath of modifiedPaths) {
         if (minimatch(modifiedPath, (value as any).paths[path], minimatchOptions)) {
           changedPath.push((value as any).paths[path])
@@ -90,7 +89,7 @@ async function run() {
   if (applicableChecklistPaths.length > 0) {
     const body = [
       `${header}\n\n`,
-      formatItemsForPath(applicableChecklistPaths),
+      `${formatItemsForPath(applicableChecklistPaths)}`,
       `\n${footer}`,
     ].join("");
 
