@@ -67,10 +67,9 @@ async function run() {
 
   if (applicableChecklistPaths.length > 0) {
     const body = [
-      `${header}\n\n`,
+      `\n Modified paths: ${modifiedPaths}`,
       ...applicableChecklistPaths.map(formatItemsForPath),
       `\n${footer}`,
-      `\n Modified paths: ${modifiedPaths}`,
       `\n Checklist paths: ${applicableChecklistPaths}`
     ].join("");
 
