@@ -10,7 +10,7 @@ store:
     - Store checklist 3
 blog:
   "paths":
-    - "Blog/**.php"
+    - "**/**"
     - "Blogger/**.ts"
   "description":
     - Please check the following blog pages (general)
